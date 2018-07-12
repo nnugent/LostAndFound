@@ -17,9 +17,10 @@ namespace LostAndFound.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
+        private ApplicationDbContext _context;
         public AccountController()
         {
+            _context = new ApplicationDbContext();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -168,6 +169,37 @@ namespace LostAndFound.Controllers
                 AddErrors(result);
             }
 
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+        
+        [AllowAnonymous]
+        public ActionResult RegisterProperty()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterProperty(RegisterPropertyViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var exists = _context.Properties.Where(m => m.Name == model.name).FirstOrDefault();
+                Property property = new Property(); if (exists == null)
+                {
+                    property = new Property()
+                    {
+                        Name = model.name
+                    };
+                }
+                else
+                {
+                    property.Name = "Already exists. Enter a Different name.";
+                }
+            }
             // If we got this far, something failed, redisplay form
             return View(model);
         }

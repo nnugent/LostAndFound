@@ -81,6 +81,13 @@ namespace LostAndFound.Models
         public string ConfirmPassword { get; set; }
     }
 
+    public class RegisterPropertyViewModel
+    {
+        [Required]
+        [Display(Name = "Property Name")]
+        public string name { get; set; }
+    }
+
     public class ResetPasswordViewModel
     {
         [Required]
